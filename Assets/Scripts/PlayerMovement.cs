@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public float IdleDecelerationGrounded = 1f;
     public float IdleDecelerationAir = 1f;
     public float JumpForce = 5f;
+    public float WallSlideSpeed = 2f;
+    public float WallSlideDeceleration = 1f;
 
     private bool isGrounded;
     private bool isTouchingLeftWall;
@@ -73,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateMovement()
     {
-        // Clamp max speed
+        // Clamp max lateral speed
         if (Math.Abs(this.rb.velocity.x) > this.MaxSpeed)
         {
             var velocity = this.rb.velocity;
@@ -83,9 +85,7 @@ public class PlayerMovement : MonoBehaviour
 
         var leftThumbstick = InputManager.GetLeftThumbstick();
 
-        //Debug.Log("Left Thumbstick X - " + leftThumbstick.x);
-
-        // If the player has released the lateral movement, decelerate
+        // If the player has released the lateral movement, and the player is moving laterally, decelerate
         if (Math.Abs(leftThumbstick.x) < Tools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > Tools.FloatEqualityTolerance)
         {
             var velocity = this.rb.velocity;
@@ -108,6 +108,19 @@ public class PlayerMovement : MonoBehaviour
             var lateralForce = this.isGrounded ? this.GroundAccelerationForce : this.AirAccelerationForce;
             var lateralForceVector = new Vector2(leftThumbstick.x * lateralForce, 0);
             this.rb.AddForce(lateralForceVector);
+        }
+
+        // If on a wall, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
+        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(leftThumbstick.x) > Tools.FloatEqualityTolerance)
+        {
+            // If wall fall speed is greater than the defined speed
+            if (this.rb.velocity.y < -this.WallSlideSpeed)
+            {
+                var velocity = this.rb.velocity;
+                velocity.y += this.WallSlideDeceleration;
+                velocity.y = velocity.y > -this.WallSlideSpeed ? -this.WallSlideSpeed : velocity.y;
+                this.rb.velocity = velocity;
+            }
         }
 
         if (this.jumpWasPressed)
