@@ -2,16 +2,21 @@
 
 public static class InputManager
 {
-    public static float ThumbstickDeadzone = 0.12f;
+    public static float ThumbstickDeadzone = 0.5f;
     public static float TriggerDeadzone = 0.12f;
 
     public static Vector2 GetLeftThumbstick()
     {
         var vector = new Vector2(Input.GetAxis("LThumbstickX"), Input.GetAxis("LThumbstickY"));
 
-        if (vector.magnitude < ThumbstickDeadzone)
+        if (Mathf.Abs(vector.x) < ThumbstickDeadzone)
         {
-            vector = Vector2.zero;
+            vector.x = 0f;
+        }
+
+        if (Mathf.Abs(vector.y) < ThumbstickDeadzone)
+        {
+            vector.y = 0f;
         }
 
         return vector;
@@ -21,9 +26,14 @@ public static class InputManager
     {
         var vector = new Vector2(Input.GetAxis("RThumbstickX"), Input.GetAxis("RThumbstickY"));
 
-        if (vector.magnitude < ThumbstickDeadzone)
+        if (Mathf.Abs(vector.x) < ThumbstickDeadzone)
         {
-            vector = Vector2.zero;
+            vector.x = 0f;
+        }
+
+        if (Mathf.Abs(vector.y) < ThumbstickDeadzone)
+        {
+            vector.y = 0f;
         }
 
         return vector;

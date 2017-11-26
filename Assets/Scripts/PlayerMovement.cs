@@ -19,11 +19,15 @@ public class PlayerMovement : MonoBehaviour
     private bool isTouchingLeftWall;
     private bool isTouchingRightWall;
     private bool jumpWasPressed;
+    private Vector2 inputAxes;
 
     private List<Vector2> contactNormals;
     private Collider2D collider;
     private Rigidbody2D rb;
 
+    public Vector2 Velocity { get { return this.rb.velocity; } }
+    public Vector2 InputAxes { get { return this.inputAxes; } }
+     
     // Use this for initialization
 	private void Start()
 	{
@@ -34,15 +38,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        this.UpdateButtonPresses();
+        this.UpdateInput();
     }
 
-    private void UpdateButtonPresses()
+    private void UpdateInput()
     {
         if (InputManager.GetButtonADown())
         {
             this.jumpWasPressed = true;
         }
+
+        this.inputAxes = InputManager.GetLeftThumbstick();
     }
 
     private void ResetButtonPresses()
@@ -77,20 +83,18 @@ public class PlayerMovement : MonoBehaviour
     {
         this.ClampMaxLateralSpeed();
 
-        var leftThumbstick = InputManager.GetLeftThumbstick();
-
         // If the player has released the lateral movement, and the player is moving laterally, decelerate
-        if (Math.Abs(leftThumbstick.x) < Tools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > Tools.FloatEqualityTolerance)
+        if (Math.Abs(this.inputAxes.x) < Tools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > Tools.FloatEqualityTolerance)
         {
             this.DecelerateLateralSpeed();
         }
         else // Else apply lateral movement
         {
-            this.ApplyLateralForce(leftThumbstick.x);
+            this.ApplyLateralForce(this.inputAxes.x);
         }
 
         // If on a wall, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
-        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(leftThumbstick.x) > Tools.FloatEqualityTolerance)
+        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > Tools.FloatEqualityTolerance)
         {
             // If wall fall speed is greater than the defined speed
             if (this.rb.velocity.y < -this.WallSlideSpeed)
@@ -103,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (this.isGrounded) // Jump normally if on the ground
             {
-                this.rb.AddForce(Vector2.up * this.JumpForce);
+                this.DoGroundJump();
             }
             else if (this.isTouchingLeftWall || this.isTouchingRightWall) // Else if on a wall, wall jump
             {
@@ -148,6 +152,11 @@ public class PlayerMovement : MonoBehaviour
         var lateralForce = this.isGrounded ? this.GroundAccelerationForce : this.AirAccelerationForce;
         var lateralForceVector = new Vector2(fraction * lateralForce, 0);
         this.rb.AddForce(lateralForceVector);
+    }
+
+    private void DoGroundJump()
+    {
+        this.rb.AddForce(Vector2.up * this.JumpForce);
     }
 
     private void DoWallJump()
