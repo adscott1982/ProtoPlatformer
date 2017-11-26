@@ -28,3 +28,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+.vs/Swing/v15/Server/sqlite3/storage.ide-wal
+.vs/Swing/v15/Server/sqlite3/storage.ide-shm
+.vs/Swing/v15/Server/sqlite3/storage.ide
+.vs/Swing/v15/Server/sqlite3/db.lock
