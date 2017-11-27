@@ -27,9 +27,17 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector2 Velocity { get { return this.rb.velocity; } }
     public Vector2 InputAxes { get { return this.inputAxes; } }
-     
+
+    public bool IsLeftContactPointTriggered { get; set; }
+
+    public bool IsRightContactPointTriggered { get; set; }
+
+    public bool IsBottomContactPointTriggered { get; set; }
+
+    public bool IsTopContactPointTriggered { get; set; }
+
     // Use this for initialization
-	private void Start()
+    private void Start()
 	{
         this.contactNormals = new List<Vector2>();
 	    this.collider = this.GetComponent<Collider2D>();
@@ -105,11 +113,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (this.jumpWasPressed)
         {
-            if (this.isGrounded) // Jump normally if on the ground
+            if (this.IsBottomContactPointTriggered) // Jump normally if on the ground
             {
                 this.DoGroundJump();
             }
-            else if (this.isTouchingLeftWall || this.isTouchingRightWall) // Else if on a wall, wall jump
+            else if (this.IsLeftContactPointTriggered || this.IsRightContactPointTriggered) // Else if on a wall, wall jump
             {
                 this.DoWallJump();
             }
@@ -156,20 +164,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void DoGroundJump()
     {
+        this.StopFalling();
         this.rb.AddForce(Vector2.up * this.JumpForce);
     }
 
     private void DoWallJump()
     {
-        // If falling stop vertical velocity
-        if (this.rb.velocity.y < 0)
-        {
-            var velocity = this.rb.velocity;
-            velocity.y = 0;
-            this.rb.velocity = velocity;
-        }
-
-        var jumpDirection = this.isTouchingLeftWall ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
+        this.StopFalling();
+        var jumpDirection = this.IsLeftContactPointTriggered ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
         jumpDirection = jumpDirection.normalized;
         this.rb.AddForce(jumpDirection * this.JumpForce);
     }
@@ -193,5 +195,15 @@ public class PlayerMovement : MonoBehaviour
     {
         var firstNormal = other.contacts.First().normal;
         this.contactNormals.Add(firstNormal);
+    }
+
+    private void StopFalling()
+    {
+        if (!(this.rb.velocity.y < 0)) return;
+
+        // If falling stop vertical velocity
+        var velocity = this.rb.velocity;
+        velocity.y = 0;
+        this.rb.velocity = velocity;
     }
 }
