@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -72,7 +71,6 @@ public class PlayerMovement : MonoBehaviour
         this.ResetButtonPresses();
     }
 
-
     private void CheckCollisions()
     {
         this.isGrounded = this.contactNormals.Any(n => n == Vector2.up);
@@ -92,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
         this.ClampMaxLateralSpeed();
 
         // If the player has released the lateral movement, and the player is moving laterally, decelerate
-        if (Math.Abs(this.inputAxes.x) < Tools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > Tools.FloatEqualityTolerance)
+        if (Math.Abs(this.inputAxes.x) < AndyTools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > AndyTools.FloatEqualityTolerance)
         {
             this.DecelerateLateralSpeed();
         }
@@ -102,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // If on a wall, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
-        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > Tools.FloatEqualityTolerance)
+        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > AndyTools.FloatEqualityTolerance)
         {
             // If wall fall speed is greater than the defined speed
             if (this.rb.velocity.y < -this.WallSlideSpeed)

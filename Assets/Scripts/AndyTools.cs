@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class Tools
+public static class AndyTools
 {
     public const float FloatEqualityTolerance = 0.000001f;
 

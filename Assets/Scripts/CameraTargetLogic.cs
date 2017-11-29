@@ -22,7 +22,7 @@ public class CameraTargetLogic : MonoBehaviour
         var targetPos = new Vector2(targetX, targetY);
 
         // If the player is looking up or down, look the camera up or down
-	    if (this.playerMovement.Velocity.magnitude < Tools.FloatEqualityTolerance)
+	    if (this.playerMovement.Velocity.magnitude < AndyTools.FloatEqualityTolerance)
 	    {
 	        if (Math.Abs(this.playerMovement.InputAxes.y) > 0)
 	        {
