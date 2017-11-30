@@ -17,7 +17,7 @@ public class CameraTargetLogic : MonoBehaviour
 	// Update is called once per frame
 	private void Update ()
 	{
-	    var targetX = this.playerMovement.Velocity.x;
+	    var targetX = this.playerMovement.IsFacingLeft ? -this.playerMovement.Velocity.x : this.playerMovement.Velocity.x;
 	    var targetY = this.playerMovement.Velocity.y;
         var targetPos = new Vector2(targetX, targetY);
 
@@ -26,7 +26,7 @@ public class CameraTargetLogic : MonoBehaviour
 	    {
 	        if (Math.Abs(this.playerMovement.InputAxes.y) > 0)
 	        {
-	            targetPos.y += Math.Sign(this.playerMovement.InputAxes.y) * VerticalLookDistance;
+	            targetPos.y += Math.Sign(this.playerMovement.InputAxes.y) * this.VerticalLookDistance;
 	        }
 	    }
 

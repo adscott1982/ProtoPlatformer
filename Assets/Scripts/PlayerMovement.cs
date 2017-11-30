@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isTouchingLeftWall;
     private bool isTouchingRightWall;
     private bool jumpWasPressed;
-    private bool facingLeft;
+    
     private bool isDecelerating;
     private bool isWallSliding;
 
@@ -40,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     public bool IsBottomContactPointTriggered { get; set; }
 
     public bool IsTopContactPointTriggered { get; set; }
+
+    public bool IsFacingLeft { get; private set; }
 
     // Use this for initialization
     private void Start()
@@ -83,9 +85,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (this.Velocity.x > AndyTools.FloatEqualityTolerance)
         {
-            if (this.facingLeft)
+            if (this.IsFacingLeft)
             {
-                this.facingLeft = false;
+                this.IsFacingLeft = false;
                 var currentScale = this.transform.localScale;
                 currentScale.x = -currentScale.x;
                 this.transform.localScale = currentScale;
@@ -93,9 +95,9 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (this.Velocity.x < -AndyTools.FloatEqualityTolerance)
         {
-            if (!this.facingLeft)
+            if (!this.IsFacingLeft)
             {
-                this.facingLeft = true;
+                this.IsFacingLeft = true;
                 var currentScale = this.transform.localScale;
                 currentScale.x = -currentScale.x;
                 this.transform.localScale = currentScale;
@@ -105,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         this.animator.SetFloat("xSpeed", Math.Abs(this.Velocity.x));
         this.animator.SetFloat("vSpeed", this.Velocity.y);
         this.animator.SetBool("OnGround", this.isGrounded);
-        this.animator.SetBool("FacingLeft", this.facingLeft);
+        this.animator.SetBool("FacingLeft", this.IsFacingLeft);
         this.animator.SetBool("IsDecelerating", this.isDecelerating);
         this.animator.SetBool("IsWallSliding", this.isWallSliding);
     }
@@ -138,20 +140,21 @@ public class PlayerMovement : MonoBehaviour
             this.ApplyLateralForce(this.inputAxes.x);
         }
 
-        // If on a wall, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
-        if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > AndyTools.FloatEqualityTolerance)
-        {
-            this.isWallSliding = true;
+        this.isWallSliding = false;
 
-            // If wall fall speed is greater than the defined speed
-            if (this.rb.velocity.y < -this.WallSlideSpeed)
-            {
-                this.ControlWallSlideVerticalSpeed();
-            }
-        }
-        else
+        // If on a wall and not on the ground, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
+        if (!this.isGrounded && (this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > AndyTools.FloatEqualityTolerance)
         {
-            this.isWallSliding = false;
+            if (this.rb.velocity.y < 0)
+            {
+                this.isWallSliding = true;
+
+                // If wall fall speed is greater than the defined speed
+                if (this.rb.velocity.y < -this.WallSlideSpeed)
+                {
+                    this.ControlWallSlideVerticalSpeed();
+                }
+            }
         }
 
         if (this.jumpWasPressed)
