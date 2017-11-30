@@ -18,11 +18,17 @@ public class PlayerMovement : MonoBehaviour
     private bool isTouchingLeftWall;
     private bool isTouchingRightWall;
     private bool jumpWasPressed;
+    private bool facingLeft;
+    private bool isDecelerating;
+    private bool isWallSliding;
+
     private Vector2 inputAxes;
 
     private List<Vector2> contactNormals;
     private Collider2D collider;
     private Rigidbody2D rb;
+    private Animator animator;
+    
 
     public Vector2 Velocity { get { return this.rb.velocity; } }
     public Vector2 InputAxes { get { return this.inputAxes; } }
@@ -38,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     // Use this for initialization
     private void Start()
 	{
+        this.animator = GetComponent<Animator>();
         this.contactNormals = new List<Vector2>();
 	    this.collider = this.GetComponent<Collider2D>();
 	    this.rb = this.GetComponent<Rigidbody2D>();
@@ -69,6 +76,38 @@ public class PlayerMovement : MonoBehaviour
 	    this.CheckCollisions();
 	    this.UpdateMovement();
         this.ResetButtonPresses();
+	    this.UpdateAnimator();
+	}
+
+    private void UpdateAnimator()
+    {
+        if (this.Velocity.x > AndyTools.FloatEqualityTolerance)
+        {
+            if (this.facingLeft)
+            {
+                this.facingLeft = false;
+                var currentScale = this.transform.localScale;
+                currentScale.x = -currentScale.x;
+                this.transform.localScale = currentScale;
+            }
+        }
+        else if (this.Velocity.x < -AndyTools.FloatEqualityTolerance)
+        {
+            if (!this.facingLeft)
+            {
+                this.facingLeft = true;
+                var currentScale = this.transform.localScale;
+                currentScale.x = -currentScale.x;
+                this.transform.localScale = currentScale;
+            }
+        }
+
+        this.animator.SetFloat("xSpeed", Math.Abs(this.Velocity.x));
+        this.animator.SetFloat("vSpeed", this.Velocity.y);
+        this.animator.SetBool("OnGround", this.isGrounded);
+        this.animator.SetBool("FacingLeft", this.facingLeft);
+        this.animator.SetBool("IsDecelerating", this.isDecelerating);
+        this.animator.SetBool("IsWallSliding", this.isWallSliding);
     }
 
     private void CheckCollisions()
@@ -77,10 +116,10 @@ public class PlayerMovement : MonoBehaviour
         this.isTouchingLeftWall = this.contactNormals.Any(n => n == Vector2.right);
         this.isTouchingRightWall = this.contactNormals.Any(n => n == Vector2.left);
 
-        Debug.Log("Contact normals: " + this.contactNormals.Count);
-        Debug.Log("IsGrounded: " + this.isGrounded);
-        Debug.Log("IsTouchingLeftWall: " + this.isTouchingLeftWall);
-        Debug.Log("IsTouchingRightWall: " + this.isTouchingRightWall);
+        //Debug.Log("Contact normals: " + this.contactNormals.Count);
+        //Debug.Log("IsGrounded: " + this.isGrounded);
+        //Debug.Log("IsTouchingLeftWall: " + this.isTouchingLeftWall);
+        //Debug.Log("IsTouchingRightWall: " + this.isTouchingRightWall);
 
         this.contactNormals.Clear();
     }
@@ -102,11 +141,17 @@ public class PlayerMovement : MonoBehaviour
         // If on a wall, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
         if ((this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > AndyTools.FloatEqualityTolerance)
         {
+            this.isWallSliding = true;
+
             // If wall fall speed is greater than the defined speed
             if (this.rb.velocity.y < -this.WallSlideSpeed)
             {
                 this.ControlWallSlideVerticalSpeed();
             }
+        }
+        else
+        {
+            this.isWallSliding = false;
         }
 
         if (this.jumpWasPressed)
@@ -137,6 +182,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void DecelerateLateralSpeed()
     {
+        this.isDecelerating = true;
         var velocity = this.rb.velocity;
         var deceleration = this.isGrounded ? this.IdleDecelerationGrounded * Time.fixedDeltaTime :
             this.IdleDecelerationAir * Time.fixedDeltaTime;
@@ -157,6 +203,20 @@ public class PlayerMovement : MonoBehaviour
     {
         var lateralForce = this.isGrounded ? this.GroundAccelerationForce : this.AirAccelerationForce;
         var lateralForceVector = new Vector2(fraction * lateralForce, 0);
+
+        // Determine if the applied lateral force will decelerate the player
+        var currentXSpeedSign = Math.Sign(this.rb.velocity.x);
+        var appliedXForceSign = Math.Sign(lateralForceVector.x);
+
+        if (currentXSpeedSign == 0 || currentXSpeedSign == appliedXForceSign)
+        {
+            this.isDecelerating = false;
+        }
+        else
+        {
+            this.isDecelerating = true;
+        }
+
         this.rb.AddForce(lateralForceVector);
     }
 
@@ -169,7 +229,7 @@ public class PlayerMovement : MonoBehaviour
     private void DoWallJump()
     {
         this.StopFalling();
-        var jumpDirection = this.IsLeftContactPointTriggered ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
+        var jumpDirection = this.isTouchingLeftWall ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
         jumpDirection = jumpDirection.normalized;
         this.rb.AddForce(jumpDirection * this.JumpForce);
     }
@@ -181,8 +241,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // If wall fall speed is greater than the max slide speed
-
+        // If wall fall speed is greater than the max slide speed clamp the vertical velocity
         var velocity = this.rb.velocity;
         velocity.y += this.WallSlideDeceleration;
         velocity.y = velocity.y > -this.WallSlideSpeed ? -this.WallSlideSpeed : velocity.y;
