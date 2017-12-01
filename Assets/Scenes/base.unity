@@ -201,6 +201,21 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 212758148230852602, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114245829748179198, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114245829748179198, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: LateralLeadMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
   m_IsPrefabParent: 0
