@@ -33,9 +33,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 Velocity { get { return this.rb.velocity; } }
     public Vector2 InputAxes { get { return this.inputAxes; } }
 
-    public bool IsLeftContactPointTriggered { get; set; }
+    public bool IsBackContactPointTriggered { get; set; }
 
-    public bool IsRightContactPointTriggered { get; set; }
+    public bool IsFrontContactPointTriggered { get; set; }
 
     public bool IsBottomContactPointTriggered { get; set; }
 
@@ -130,16 +130,6 @@ public class PlayerMovement : MonoBehaviour
     {
         this.ClampMaxLateralSpeed();
 
-        // If the player has released the lateral movement, and the player is moving laterally, decelerate
-        if (Math.Abs(this.inputAxes.x) < AndyTools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > AndyTools.FloatEqualityTolerance)
-        {
-            this.DecelerateLateralSpeed();
-        }
-        else // Else apply lateral movement
-        {
-            this.ApplyLateralForce(this.inputAxes.x);
-        }
-
         this.isWallSliding = false;
 
         // If on a wall and not on the ground, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
@@ -163,10 +153,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 this.DoGroundJump();
             }
-            else if (this.IsLeftContactPointTriggered || this.IsRightContactPointTriggered) // Else if on a wall, wall jump
+            else if (this.IsFrontContactPointTriggered) // Else if on a wall, wall jump
             {
                 this.DoWallJump();
             }
+        }
+
+        // If the player has released the lateral movement, and the player is moving laterally, decelerate
+        if (Math.Abs(this.inputAxes.x) < AndyTools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > AndyTools.FloatEqualityTolerance)
+        {
+            this.DecelerateLateralSpeed();
+        }
+        else
+        {
+            this.ApplyLateralForce(this.inputAxes.x);
         }
     }
 
@@ -232,7 +232,8 @@ public class PlayerMovement : MonoBehaviour
     private void DoWallJump()
     {
         this.StopFalling();
-        var jumpDirection = this.isTouchingLeftWall ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
+        this.StopHorizontalSpeed();
+        var jumpDirection = this.IsFacingLeft ? new Vector2(1f, 1.2f) : new Vector2(-1f, 1.2f);
         jumpDirection = jumpDirection.normalized;
         this.rb.AddForce(jumpDirection * this.JumpForce);
     }
@@ -264,6 +265,18 @@ public class PlayerMovement : MonoBehaviour
         // If falling stop vertical velocity
         var velocity = this.rb.velocity;
         velocity.y = 0;
+        this.rb.velocity = velocity;
+    }
+    private void StopHorizontalSpeed()
+    {
+        if (Math.Abs(this.rb.velocity.x) < AndyTools.FloatEqualityTolerance)
+        {
+            return;
+        }
+
+        // If falling stop vertical velocity
+        var velocity = this.rb.velocity;
+        velocity.x = 0;
         this.rb.velocity = velocity;
     }
 }

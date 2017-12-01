@@ -151,42 +151,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 137831008362624254, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137703174366811464, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137957852861304304, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137826778074868074, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137954047676234642, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137978725985502276, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137256892886405224, guid: 4094cf6aad7a8d442a54a3330ed843f4,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 137929499460143566, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+    - target: {fileID: 137792844445758158, guid: 4094cf6aad7a8d442a54a3330ed843f4,
         type: 2}
       propertyPath: m_Mesh
       value: 
@@ -196,25 +161,55 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 137792844445758158, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+    - target: {fileID: 137929499460143566, guid: 4094cf6aad7a8d442a54a3330ed843f4,
         type: 2}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 212758148230852602, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+    - target: {fileID: 137256892886405224, guid: 4094cf6aad7a8d442a54a3330ed843f4,
         type: 2}
-      propertyPath: m_Enabled
-      value: 0
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 114245829748179198, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+    - target: {fileID: 137978725985502276, guid: 4094cf6aad7a8d442a54a3330ed843f4,
         type: 2}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 114245829748179198, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+    - target: {fileID: 137954047676234642, guid: 4094cf6aad7a8d442a54a3330ed843f4,
         type: 2}
-      propertyPath: LateralLeadMultiplier
-      value: 1.5
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 137826778074868074, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 137957852861304304, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 137703174366811464, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 137831008362624254, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 61711705337916344, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Offset.x
+      value: 0.043106124
+      objectReference: {fileID: 0}
+    - target: {fileID: 61711705337916344, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 0.38621226
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}

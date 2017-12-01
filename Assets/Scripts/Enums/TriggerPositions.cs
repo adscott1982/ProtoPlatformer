@@ -3,8 +3,8 @@
     public enum TriggerPositions
     {
         Top,
-        Right,
+        Front,
         Bottom,
-        Left
+        Back
     }
 }

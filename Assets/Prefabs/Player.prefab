@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 61296253970265564}
   - component: {fileID: 114649674448417852}
   m_Layer: 0
-  m_Name: LeftContactPoint
+  m_Name: BackContactPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -565,7 +565,7 @@ GameObject:
   - component: {fileID: 61711705337916344}
   - component: {fileID: 114636335714021866}
   m_Layer: 0
-  m_Name: RightContactPoint
+  m_Name: FrontContactPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1442,6 +1442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerGameObject: {fileID: 1491205204318802}
   VerticalLookDistance: 15
+  LateralLeadMultiplier: 1.5
 --- !u!114 &114277617099431886
 MonoBehaviour:
   m_ObjectHideFlags: 1

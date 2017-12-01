@@ -21,11 +21,11 @@ public class TriggerPoint : MonoBehaviour
             case TriggerPositions.Bottom:
                 this.UpdateParent = b => this.parent.IsBottomContactPointTriggered = b;
                 break;
-            case TriggerPositions.Left:
-                this.UpdateParent = b => this.parent.IsLeftContactPointTriggered = b;
+            case TriggerPositions.Back:
+                this.UpdateParent = b => this.parent.IsBackContactPointTriggered = b;
                 break;
-            case TriggerPositions.Right:
-                this.UpdateParent = b => this.parent.IsRightContactPointTriggered = b;
+            case TriggerPositions.Front:
+                this.UpdateParent = b => this.parent.IsFrontContactPointTriggered = b;
                 break;
             case TriggerPositions.Top:
                 this.UpdateParent = b => this.parent.IsTopContactPointTriggered = b;
