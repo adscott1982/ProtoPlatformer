@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Extensions;
+using Extensions;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -73,12 +73,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateInput()
     {
-        if (InputManager.GetButtonADown())
+        if (InputManager.GetButton1Down())
         {
             this.jumpWasPressed = true;
         }
 
-        this.inputAxes = InputManager.GetLeftThumbstick();
+        this.inputAxes = InputManager.GetMainAxes();
     }
 
     private void ResetButtonPresses()

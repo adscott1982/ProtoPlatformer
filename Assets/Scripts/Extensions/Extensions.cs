@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Extensions
+namespace Extensions
 {
     public static class Extensions
     {
