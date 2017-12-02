@@ -79,6 +79,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         this.inputAxes = InputManager.GetMainAxes();
+
+        if (InputManager.GetExitButtonDown())
+        {
+            // Exit game - should be moved to game manager object
+            Debug.Log("Exit pressed, quitting game.");
+            Application.Quit();
+        }
     }
 
     private void ResetButtonPresses()

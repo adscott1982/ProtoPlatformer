@@ -60,4 +60,14 @@ public static class InputManager
     {
         return Input.GetButton("Button1");
     }
+
+    public static bool GetExitButtonDown()
+    {
+        return Input.GetButtonDown("ExitButton");
+    }
+
+    public static bool GetExitButton()
+    {
+        return Input.GetButton("ExitButton");
+    }
 }

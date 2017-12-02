@@ -34,3 +34,5 @@ sysinfo.txt
 .vs/Swing/v15/Server/sqlite3/db.lock
 .vs/ProtoPlatformer/v15/Server/sqlite3/db.lock
 .vs/ProtoPlatformer/v15/Server/sqlite3/storage.ide
+.vs/ProtoPlatformer/v15/Server/sqlite3/storage.ide-wal
+.vs/ProtoPlatformer/v15/Server/sqlite3/storage.ide-shm
