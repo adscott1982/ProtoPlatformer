@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Extensions;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -25,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 inputAxes;
 
     private List<Vector2> contactNormals;
-    private Collider2D collider;
     private Rigidbody2D rb;
     private Animator animator;
     
@@ -46,15 +46,29 @@ public class PlayerMovement : MonoBehaviour
     // Use this for initialization
     private void Start()
 	{
-        this.animator = GetComponent<Animator>();
+        this.animator = this.GetComponent<Animator>();
         this.contactNormals = new List<Vector2>();
-	    this.collider = this.GetComponent<Collider2D>();
 	    this.rb = this.GetComponent<Rigidbody2D>();
 	}
 
     private void Update()
     {
         this.UpdateInput();
+    }
+
+    // Update is called once per frame
+	private void FixedUpdate()
+	{
+	    this.CheckCollisions();
+	    this.UpdateMovement();
+        this.ResetButtonPresses();
+	    this.UpdateAnimator();
+	}
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        var firstNormal = other.contacts.First().normal;
+        this.contactNormals.Add(firstNormal);
     }
 
     private void UpdateInput()
@@ -72,15 +86,6 @@ public class PlayerMovement : MonoBehaviour
         this.jumpWasPressed = false;
     }
 
-    // Update is called once per frame
-	private void FixedUpdate()
-	{
-	    this.CheckCollisions();
-	    this.UpdateMovement();
-        this.ResetButtonPresses();
-	    this.UpdateAnimator();
-	}
-
     private void UpdateAnimator()
     {
         if (this.Velocity.x > AndyTools.FloatEqualityTolerance)
@@ -88,9 +93,7 @@ public class PlayerMovement : MonoBehaviour
             if (this.IsFacingLeft)
             {
                 this.IsFacingLeft = false;
-                var currentScale = this.transform.localScale;
-                currentScale.x = -currentScale.x;
-                this.transform.localScale = currentScale;
+                this.transform.FlipXScale();
             }
         }
         else if (this.Velocity.x < -AndyTools.FloatEqualityTolerance)
@@ -98,9 +101,7 @@ public class PlayerMovement : MonoBehaviour
             if (!this.IsFacingLeft)
             {
                 this.IsFacingLeft = true;
-                var currentScale = this.transform.localScale;
-                currentScale.x = -currentScale.x;
-                this.transform.localScale = currentScale;
+                this.transform.FlipXScale();
             }
         }
 
@@ -117,23 +118,17 @@ public class PlayerMovement : MonoBehaviour
         this.isGrounded = this.contactNormals.Any(n => n == Vector2.up);
         this.isTouchingLeftWall = this.contactNormals.Any(n => n == Vector2.right);
         this.isTouchingRightWall = this.contactNormals.Any(n => n == Vector2.left);
-
-        //Debug.Log("Contact normals: " + this.contactNormals.Count);
-        //Debug.Log("IsGrounded: " + this.isGrounded);
-        //Debug.Log("IsTouchingLeftWall: " + this.isTouchingLeftWall);
-        //Debug.Log("IsTouchingRightWall: " + this.isTouchingRightWall);
-
         this.contactNormals.Clear();
     }
 
     private void UpdateMovement()
     {
-        this.ClampMaxLateralSpeed();
+        this.rb.ClampXMaxSpeed(this.MaxSpeed);
 
         this.isWallSliding = false;
 
-        // If on a wall and not on the ground, and the left thumbstick is pressed in a direction, clamp vertical falling speed to wall slide speed
-        if (!this.isGrounded && (this.isTouchingLeftWall || this.isTouchingRightWall) && Math.Abs(this.inputAxes.x) > AndyTools.FloatEqualityTolerance)
+        // If on a wall and not on the ground, and the left thumbstick is pressed in a lateral direction, clamp vertical falling speed to wall slide speed
+        if (!this.isGrounded && (this.isTouchingLeftWall || this.isTouchingRightWall) && !this.inputAxes.x.IsApproxZero())
         {
             if (this.rb.velocity.y < 0)
             {
@@ -160,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // If the player has released the lateral movement, and the player is moving laterally, decelerate
-        if (Math.Abs(this.inputAxes.x) < AndyTools.FloatEqualityTolerance && Math.Abs(this.rb.velocity.x) > AndyTools.FloatEqualityTolerance)
+        if (this.inputAxes.x.IsApproxZero() && !this.rb.velocity.x.IsApproxZero())
         {
             this.DecelerateLateralSpeed();
         }
@@ -170,36 +165,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void ClampMaxLateralSpeed()
-    {
-        // If not currently at max speed, return
-        if (!(Math.Abs(this.rb.velocity.x) > this.MaxSpeed))
-        {
-            return;
-        }
-
-        var velocity = this.rb.velocity;
-        velocity.x = velocity.x > 0 ? this.MaxSpeed : -this.MaxSpeed;
-        this.rb.velocity = velocity;
-    }
-
     private void DecelerateLateralSpeed()
     {
         this.isDecelerating = true;
-        var velocity = this.rb.velocity;
-        var deceleration = this.isGrounded ? this.IdleDecelerationGrounded * Time.fixedDeltaTime :
-            this.IdleDecelerationAir * Time.fixedDeltaTime;
-
-        if (Mathf.Abs(velocity.x) - deceleration < 0)
-        {
-            velocity.x = 0f;
-        }
-        else
-        {
-            velocity.x = velocity.x > 0 ? velocity.x - deceleration : velocity.x + deceleration;
-        }
-
-        this.rb.velocity = velocity;
+        this.rb.DecelerateX(this.isGrounded ? this.IdleDecelerationGrounded : this.IdleDecelerationAir);
     }
 
     private void ApplyLateralForce(float fraction)
@@ -246,16 +215,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // If wall fall speed is greater than the max slide speed clamp the vertical velocity
-        var velocity = this.rb.velocity;
-        velocity.y += this.WallSlideDeceleration;
-        velocity.y = velocity.y > -this.WallSlideSpeed ? -this.WallSlideSpeed : velocity.y;
-        this.rb.velocity = velocity;
-    }
-
-    private void OnCollisionStay2D(Collision2D other)
-    {
-        var firstNormal = other.contacts.First().normal;
-        this.contactNormals.Add(firstNormal);
+        this.rb.ClampYMaxSpeed(this.WallSlideSpeed);
     }
 
     private void StopFalling()
@@ -263,20 +223,11 @@ public class PlayerMovement : MonoBehaviour
         if (!(this.rb.velocity.y < 0)) return;
 
         // If falling stop vertical velocity
-        var velocity = this.rb.velocity;
-        velocity.y = 0;
-        this.rb.velocity = velocity;
+        this.rb.ClampYMaxSpeed(0f);
     }
+
     private void StopHorizontalSpeed()
     {
-        if (Math.Abs(this.rb.velocity.x) < AndyTools.FloatEqualityTolerance)
-        {
-            return;
-        }
-
-        // If falling stop vertical velocity
-        var velocity = this.rb.velocity;
-        velocity.x = 0;
-        this.rb.velocity = velocity;
+        this.rb.ClampXMaxSpeed(0f);
     }
 }
