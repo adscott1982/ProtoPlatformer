@@ -61,6 +61,36 @@ public static class InputManager
         return Input.GetButton("Button1");
     }
 
+    public static bool GetButton2Down()
+    {
+        return Input.GetButtonDown("Button2");
+    }
+
+    public static bool GetButton2()
+    {
+        return Input.GetButton("Button2");
+    }
+
+    public static bool GetButton3Down()
+    {
+        return Input.GetButtonDown("Button3");
+    }
+
+    public static bool GetButton3()
+    {
+        return Input.GetButton("Button3");
+    }
+
+    public static bool GetButton4Down()
+    {
+        return Input.GetButtonDown("Button4");
+    }
+
+    public static bool GetButton4()
+    {
+        return Input.GetButton("Button4");
+    }
+
     public static bool GetExitButtonDown()
     {
         return Input.GetButtonDown("ExitButton");
