@@ -45,7 +45,5 @@ public class CameraTargetLogic : MonoBehaviour
 	    }
 
         this.transform.localPosition = Vector2.Lerp(this.transform.localPosition, targetPos, Time.deltaTime);
-        //this.transform.localPosition = targetPos;
-
     }
 }
