@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     public float JumpForce = 5f;
     public float WallSlideSpeed = 2f;
     public float WallSlideDeceleration = 1f;
+    public float MaxWalkingAngle = 50;
+    public Vector2 Angle;
 
     private bool isGrounded;
     private bool isTouchingLeftWall;
@@ -25,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 inputAxes;
 
-    private List<Vector2> contactNormals;
+    private List<ContactPoint2D> contactPoints;
     private Rigidbody2D rb;
     private Animator animator;
     
@@ -47,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
 	{
         this.animator = this.GetComponent<Animator>();
-        this.contactNormals = new List<Vector2>();
+        this.contactPoints = new List<ContactPoint2D>();
 	    this.rb = this.GetComponent<Rigidbody2D>();
 	}
 
@@ -67,8 +69,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        var firstNormal = other.contacts.First().normal;
-        this.contactNormals.Add(firstNormal);
+        var firstContact = other.contacts.First();
+        this.contactPoints.Add(firstContact);
     }
 
     private void UpdateInput()
@@ -122,10 +124,62 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckCollisions()
     {
-        this.isGrounded = this.contactNormals.Any(n => n == Vector2.up);
-        this.isTouchingLeftWall = this.contactNormals.Any(n => n == Vector2.right);
-        this.isTouchingRightWall = this.contactNormals.Any(n => n == Vector2.left);
-        this.contactNormals.Clear();
+        //this.isGrounded = this.contactPoints.Any(p => p.normal == Vector2.up);
+        this.isTouchingLeftWall = this.contactPoints.Any(p => p.normal == Vector2.right);
+        this.isTouchingRightWall = this.contactPoints.Any(p => p.normal == Vector2.left);
+
+        if (this.contactPoints.Count == 0)
+        {
+            this.isGrounded = false;
+            this.isTouchingLeftWall = false;
+            this.isTouchingRightWall = false;
+
+            this.contactPoints.Clear();
+
+            return;
+        }
+
+        var averageNormalAngle = this.contactPoints.Select(p => p.normal.RelativeDirectionDegrees(Vector2.up)).Average();
+        Debug.Log("Average normal angle = " + averageNormalAngle);
+
+        if (averageNormalAngle.IsInRange(-50, 50))
+        {
+            this.isGrounded = true;
+            //this.RenderRotation = averageNormalAngle - 90;
+        }
+
+        this.contactPoints.Clear();
+        //var right = Vector2.right.DirectionDegrees();
+        //var rightUp = new Vector2(1, 1).DirectionDegrees();
+        //var up = Vector2.up.DirectionDegrees();
+        //var leftUp = new Vector2(-1, 1).normalized.DirectionDegrees();
+        //var left = Vector2.left.DirectionDegrees();
+        //var leftDown = new Vector2(-1, -1).normalized.DirectionDegrees();
+        //var down = Vector2.down.DirectionDegrees();
+        //var rightDown = new Vector2(1, -1).normalized.DirectionDegrees();
+
+        //Debug.Log(string.Format("Normal Right: {0} RightUp: {1} Up: {2} UpLeft: {3} Left: {4} LeftDown: {5} Down: {6} DownRight: {7}", right, rightUp, up, leftUp, left, leftDown, down, rightDown));
+
+        //right = Vector2.right.RelativeDirectionDegrees(this.Angle);
+        //rightUp = new Vector2(1, 1).normalized.RelativeDirectionDegrees(this.Angle);
+        //up = Vector2.up.RelativeDirectionDegrees(this.Angle);
+        //leftUp = new Vector2(-1, 1).normalized.RelativeDirectionDegrees(this.Angle);
+        //left = Vector2.left.RelativeDirectionDegrees(this.Angle);
+        //leftDown = new Vector2(-1, -1).normalized.RelativeDirectionDegrees(this.Angle);
+        //down = Vector2.down.RelativeDirectionDegrees(this.Angle);
+        //rightDown = new Vector2(1, -1).normalized.RelativeDirectionDegrees(this.Angle);
+
+        //Debug.Log(string.Format("Adjusted Right: {0} RightUp: {1} Up: {2} UpLeft: {3} Left: {4} LeftDown: {5} Down: {6} DownRight: {7}", right, rightUp, up, leftUp, left, leftDown, down, rightDown));
+
+        //foreach (var contactPoint in this.contactPoints)
+        //{
+        //    var start = contactPoint.point;
+        //    var end = contactPoint.point + (contactPoint.normal * 2);
+        //    Debug.DrawLine(start, end, Color.red);
+
+        //    var angle = contactPoint.normal.DirectionDegrees() - 90;
+        //    Debug.Log("Contact angle = " + angle);
+        //}
     }
 
     private void UpdateMovement()

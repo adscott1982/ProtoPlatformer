@@ -9,9 +9,43 @@ public static class AndyTools
         return new Vector3(vector3.x + vector2.x, vector3.y + vector2.y);
     }
 
-    public static float Direction(this Vector2 vector)
+    public static float DirectionDegrees(this Vector2 vector)
     {
         return (Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg);
+    }
+
+    public static float RelativeDirectionDegrees(this Vector2 vector, Vector2 relativeVector)
+    {
+        // Calculate the angle of the relative vector
+        var relativeVectorAngle = relativeVector.DirectionDegrees();
+
+        // Rotate the incoming vector by the angle difference
+        var rotatedVector = vector.Rotate(-relativeVectorAngle);
+
+        // return the angle
+        return (Mathf.Atan2(rotatedVector.y, rotatedVector.x) * Mathf.Rad2Deg);
+    }
+
+    public static Vector2 Rotate(this Vector2 vector, float degrees)
+    {
+        var sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
+        var cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
+
+        var tx = vector.x;
+        var ty = vector.y;
+        vector.x = (cos * tx) - (sin * ty);
+        vector.y = (sin * tx) + (cos * ty);
+        return vector;
+    }
+
+    public static bool IsInRange(this float value, float firstLimit, float secondLimit)
+    {
+        if (value >= firstLimit && value <= secondLimit)
+        {
+            return true;
+        }
+
+        return value >= secondLimit && value <= firstLimit;
     }
 
     public static float GetLerpedRotationDelta(float currentRotation, float targetRotation, float interpolationValue, float maxRotationSpeed)
