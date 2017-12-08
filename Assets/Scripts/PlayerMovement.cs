@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
     private List<ContactPoint2D> contactPoints;
     private Rigidbody2D rb;
     private Animator animator;
-    
 
     public Vector2 Velocity { get { return this.rb.velocity; } }
     public Vector2 InputAxes { get { return this.inputAxes; } }
@@ -44,6 +43,8 @@ public class PlayerMovement : MonoBehaviour
     public bool IsTopContactPointTriggered { get; set; }
 
     public bool IsFacingLeft { get; private set; }
+
+    public float RenderRotation { get; private set; }
 
     // Use this for initialization
     private void Start()
@@ -124,13 +125,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckCollisions()
     {
-        //this.isGrounded = this.contactPoints.Any(p => p.normal == Vector2.up);
+        foreach (var contactPoint in this.contactPoints)
+        {
+            var start = contactPoint.point;
+            var end = contactPoint.point + (contactPoint.normal * 2);
+            Debug.DrawLine(start, end, Color.red);
+
+            var angle = contactPoint.normal.DirectionDegrees() - 90;
+            Debug.Log("Contact angle = " + angle);
+        }
+
         this.isTouchingLeftWall = this.contactPoints.Any(p => p.normal == Vector2.right);
         this.isTouchingRightWall = this.contactPoints.Any(p => p.normal == Vector2.left);
 
         if (this.contactPoints.Count == 0)
         {
-            this.isGrounded = false;
+            if (!this.IsBottomContactPointTriggered)
+            {
+                this.RenderRotation = 0f;
+                this.isGrounded = false;
+            }
+
             this.isTouchingLeftWall = false;
             this.isTouchingRightWall = false;
 
@@ -139,16 +154,27 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var averageNormalAngle = this.contactPoints.Select(p => p.normal.RelativeDirectionDegrees(Vector2.up)).Average();
-        Debug.Log("Average normal angle = " + averageNormalAngle);
+        var allGroundAngles = this.contactPoints
+            .Select(p => p.normal.RelativeDirectionDegrees(Vector2.up))
+            .Where(a => a.IsInRange(-this.MaxWalkingAngle, this.MaxWalkingAngle)).ToList();
 
-        if (averageNormalAngle.IsInRange(-50, 50))
+        if (allGroundAngles.Any())
         {
-            this.isGrounded = true;
-            //this.RenderRotation = averageNormalAngle - 90;
+            var averageGroundAngle = allGroundAngles.Average();
+
+            if (averageGroundAngle.IsInRange(-50, 50))
+            {
+                this.isGrounded = true;
+                this.RenderRotation = this.IsFacingLeft ? -averageGroundAngle : averageGroundAngle;
+            }
+        }
+        else if (!this.IsBottomContactPointTriggered)
+        {
+            this.isGrounded = false;
         }
 
         this.contactPoints.Clear();
+
         //var right = Vector2.right.DirectionDegrees();
         //var rightUp = new Vector2(1, 1).DirectionDegrees();
         //var up = Vector2.up.DirectionDegrees();
@@ -189,7 +215,9 @@ public class PlayerMovement : MonoBehaviour
         this.isWallSliding = false;
 
         // If on a wall and not on the ground, and the left thumbstick is pressed in a lateral direction, clamp vertical falling speed to wall slide speed
-        if (!this.isGrounded && (this.isTouchingLeftWall || this.isTouchingRightWall) && !this.inputAxes.x.IsApproxZero())
+        if (!this.isGrounded 
+            && ((this.isTouchingLeftWall && this.inputAxes.x < 0)
+            || (this.isTouchingRightWall && this.inputAxes.x > 0)))
         {
             if (this.rb.velocity.y < 0)
             {

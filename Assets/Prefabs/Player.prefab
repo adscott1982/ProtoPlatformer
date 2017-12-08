@@ -2167,6 +2167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RagdollCameraTarget: {fileID: 4744183635053828}
+  RenderObjects:
+  - {fileID: 4274855318964310}
+  - {fileID: 4553531391754074}
 --- !u!114 &114581390512257354
 MonoBehaviour:
   m_ObjectHideFlags: 1

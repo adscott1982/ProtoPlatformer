@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public Transform RagdollCameraTarget;
+    public List<Transform> RenderObjects;
 
     private Animator animator;
     private CameraFollow2D cameraFollower;
+    private PlayerMovement playerMovement;
 
     public bool IsRagdollActivated { get; set; }
     public Vector2 Velocity { get; private set; }
@@ -16,6 +18,7 @@ public class PlayerManager : MonoBehaviour
 	void Start ()
 	{
 	    this.animator = this.GetComponent<Animator>();
+	    this.playerMovement = this.GetComponent<PlayerMovement>();
 	    this.cameraFollower = Camera.main.GetComponent<CameraFollow2D>();
         this.IsRagdollActivated = false;
 	}
@@ -32,6 +35,15 @@ public class PlayerManager : MonoBehaviour
             this.GetComponent<Rigidbody2D>().simulated = false;
 
             this.cameraFollower.Target = this.RagdollCameraTarget;
+        }
+
+        if (!this.IsRagdollActivated)
+        {
+            // Rotate the render objects based on the PlayerMovement specified RenderAngle
+            foreach (var renderObject in this.RenderObjects)
+            {
+                renderObject.localRotation = Quaternion.AngleAxis(this.playerMovement.RenderRotation, Vector3.forward);
+            }
         }
 	}
 }
