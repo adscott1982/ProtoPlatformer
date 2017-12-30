@@ -342,6 +342,47 @@ Prefab:
       propertyPath: m_Size.x
       value: 0.9677566
       objectReference: {fileID: 0}
+    - target: {fileID: 1916743761856780, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1497406288890848, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1043407331375342, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1881751833317312, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 114037875456869714, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Length
+      value: 0.16000083
+      objectReference: {fileID: 0}
+    - target: {fileID: 114190509367791720, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Length
+      value: 0.43000042
+      objectReference: {fileID: 0}
+    - target: {fileID: 114581390512257354, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Length
+      value: 0.42000088
+      objectReference: {fileID: 0}
+    - target: {fileID: 50540133633827418, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 50540133633827418, guid: 4094cf6aad7a8d442a54a3330ed843f4,
+        type: 2}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4094cf6aad7a8d442a54a3330ed843f4, type: 2}
   m_IsPrefabParent: 0
