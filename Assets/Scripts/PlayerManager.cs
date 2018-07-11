@@ -26,24 +26,24 @@ public class PlayerManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (InputManager.GetButton4Down())
-        {
-            //this.animator.SetBool("IsRagdollActivated", true);
-            this.animator.enabled = false;
-            this.IsRagdollActivated = true;
-            this.Velocity = this.GetComponent<Rigidbody2D>().velocity;
-            this.GetComponent<Rigidbody2D>().simulated = false;
+        //if (InputManager.GetButton4Down())
+        //{
+        //    //this.animator.SetBool("IsRagdollActivated", true);
+        //    this.animator.enabled = false;
+        //    this.IsRagdollActivated = true;
+        //    this.Velocity = this.GetComponent<Rigidbody2D>().velocity;
+        //    this.GetComponent<Rigidbody2D>().simulated = false;
 
-            this.cameraFollower.Target = this.RagdollCameraTarget;
-        }
+        //    this.cameraFollower.Target = this.RagdollCameraTarget;
+        //}
 
-        if (!this.IsRagdollActivated)
-        {
-            // Rotate the render objects based on the PlayerMovement specified RenderAngle
-            foreach (var renderObject in this.RenderObjects)
-            {
-                renderObject.localRotation = Quaternion.AngleAxis(this.playerMovement.RenderRotation, Vector3.forward);
-            }
-        }
+        //if (!this.IsRagdollActivated)
+        //{
+        //    // Rotate the render objects based on the PlayerMovement specified RenderAngle
+        //    foreach (var renderObject in this.RenderObjects)
+        //    {
+        //        renderObject.localRotation = Quaternion.AngleAxis(this.playerMovement.RenderRotation, Vector3.forward);
+        //    }
+        //}
 	}
 }

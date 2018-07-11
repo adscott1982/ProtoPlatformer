@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     private List<ContactPoint2D> contactPoints;
     private Rigidbody2D rb;
-    private Animator animator;
+    //private Animator animator;
 
     public Vector2 Velocity { get { return this.rb.velocity; } }
     public Vector2 InputAxes { get { return this.inputAxes; } }
@@ -49,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     // Use this for initialization
     private void Start()
 	{
-        this.animator = this.GetComponent<Animator>();
+        //this.animator = this.GetComponent<Animator>();
         this.contactPoints = new List<ContactPoint2D>();
 	    this.rb = this.GetComponent<Rigidbody2D>();
 	}
@@ -65,8 +65,8 @@ public class PlayerMovement : MonoBehaviour
 	    this.CheckCollisions();
 	    this.UpdateMovement();
         this.ResetButtonPresses();
-	    this.UpdateAnimator();
-	}
+        this.UpdateAnimator();
+    }
 
     private void OnCollisionStay2D(Collision2D other)
     {
@@ -115,12 +115,12 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        this.animator.SetFloat("xSpeed", Math.Abs(this.Velocity.x));
-        this.animator.SetFloat("vSpeed", this.Velocity.y);
-        this.animator.SetBool("OnGround", this.isGrounded);
-        this.animator.SetBool("FacingLeft", this.IsFacingLeft);
-        this.animator.SetBool("IsDecelerating", this.isDecelerating);
-        this.animator.SetBool("IsWallSliding", this.isWallSliding);
+        //this.animator.SetFloat("xSpeed", Math.Abs(this.Velocity.x));
+        //this.animator.SetFloat("vSpeed", this.Velocity.y);
+        //this.animator.SetBool("OnGround", this.isGrounded);
+        //this.animator.SetBool("FacingLeft", this.IsFacingLeft);
+        //this.animator.SetBool("IsDecelerating", this.isDecelerating);
+        //this.animator.SetBool("IsWallSliding", this.isWallSliding);
     }
 
     private void CheckCollisions()
