@@ -7,6 +7,11 @@ public class CameraFollow2D : MonoBehaviour
 
     private void Update()
     {
+        if (this.Target == null)
+        {
+            return;
+        }
+
         Vector3 newPosition = this.Target.position;
         newPosition.z = -10;
         this.transform.position = Vector3.Slerp(this.transform.position, newPosition, this.FollowSpeed * Time.deltaTime);
