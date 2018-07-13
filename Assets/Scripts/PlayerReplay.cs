@@ -9,6 +9,9 @@ public class PlayerReplay : MonoBehaviour
     private SceneManager sceneManager;
     private float startTime;
     private int lastIndex;
+    private Rigidbody2D rb;
+    private Vector2 previousTargetPosition;
+    private bool replayEnded;
 
     public List<TimePosition> TimePositions { get; set; }
 
@@ -16,31 +19,45 @@ public class PlayerReplay : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+        this.rb = this.GetComponent<Rigidbody2D>();
         this.sceneManager = GameObject.FindGameObjectWithTag("Level").GetComponent<SceneManager>();
         this.startTime = Time.timeSinceLevelLoad;
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
-        if (this.TimePositions == null)
+        if (this.replayEnded)
         {
-            return;
+            this.rb.isKinematic = true;
         }
 
-        try
-        {
-            this.transform.position = this.DetermineCurrentPosition();
-        }
-        catch (Exception e)
-        {
+        this.rb.position = previousTargetPosition;
 
-        }
+        //this.transform.position = this.DetermineCurrentPosition();
+        var targetPosition = this.DetermineCurrentPosition();
+
+        //this.rb.velocity = this.CalculateVelocity(this.transform.position, targetPosition);
+        this.rb.MovePosition(targetPosition);
+        this.previousTargetPosition = targetPosition;
+        //this.rb.MovePosition(targetPosition);
 	}
+
+    private Vector2 CalculateVelocity(Vector2 position, Vector2 targetPosition)
+    {
+        return (targetPosition - position) * Time.fixedDeltaTime; 
+    }
 
     private Vector2 DetermineCurrentPosition()
     {
         Vector2 position = this.transform.position;
+
+        if (this.lastIndex >= this.TimePositions.Count - 1)
+        {
+            this.replayEnded = true;
+            return position;
+        }
+
         var currentAge = Time.timeSinceLevelLoad - this.startTime;
 
         // Find the previous and next position based on current time
