@@ -67,6 +67,8 @@ public class PlayerReplay : MonoBehaviour
             var yPos = lastTimePosition.Position.y + yDelta;
 
             position = new Vector2(xPos, yPos);
+
+            break;
         }
 
         // Find the percentage between the previous and next position
