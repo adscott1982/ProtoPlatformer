@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PlayerReplay : MonoBehaviour
 {
-    private SceneManager sceneManager;
     private float startTime;
     private int lastIndex;
     private Rigidbody2D rb;
@@ -20,19 +19,19 @@ public class PlayerReplay : MonoBehaviour
     void Start ()
     {
         this.rb = this.GetComponent<Rigidbody2D>();
-        this.sceneManager = GameObject.FindGameObjectWithTag("Level").GetComponent<SceneManager>();
         this.startTime = Time.timeSinceLevelLoad;
-	}
+        this.transform.position = this.TimePositions[0].Position;
+        this.previousTargetPosition = this.TimePositions[0].Position;
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate ()
     {
+        this.rb.position = previousTargetPosition;
         if (this.replayEnded)
         {
             this.rb.isKinematic = true;
         }
-
-        this.rb.position = previousTargetPosition;
 
         //this.transform.position = this.DetermineCurrentPosition();
         var targetPosition = this.DetermineCurrentPosition();
@@ -40,7 +39,6 @@ public class PlayerReplay : MonoBehaviour
         //this.rb.velocity = this.CalculateVelocity(this.transform.position, targetPosition);
         this.rb.MovePosition(targetPosition);
         this.previousTargetPosition = targetPosition;
-        //this.rb.MovePosition(targetPosition);
 	}
 
     private Vector2 CalculateVelocity(Vector2 position, Vector2 targetPosition)
@@ -71,6 +69,11 @@ public class PlayerReplay : MonoBehaviour
 
             var lastTimePosition = this.TimePositions[lastIndex];
             var nextTimePosition = this.TimePositions[i];
+
+            if (lastIndex == 0 && i == 0)
+            {
+                lastTimePosition = new TimePosition(this.startTime, this.transform.position);
+            }
 
             var currentTicks = currentAge - lastTimePosition.Seconds;
             var nextTicks = nextTimePosition.Seconds - lastTimePosition.Seconds;

@@ -8,11 +8,15 @@ public class SceneManager : MonoBehaviour
 {
     private List<List<TimePosition>> records;
     private List<GameObject> playerReplayObjects;
+    private PlayerStart playerStart;
+    private float restartTime;
+
     // Use this for initialization
     void Start ()
     {
         this.records = new List<List<TimePosition>>();
         this.playerReplayObjects = new List<GameObject>();
+        this.playerStart = this.GetComponentInChildren<PlayerStart>();
 	}
 	
 	// Update is called once per frame
@@ -33,6 +37,7 @@ public class SceneManager : MonoBehaviour
             Destroy(playerReplayObject);
         }
 
+        this.restartTime = Time.timeSinceLevelLoad;
         foreach(var record in this.records)
         {
             var go = Instantiate(Resources.Load("PlayerReplay")) as GameObject;
@@ -40,6 +45,6 @@ public class SceneManager : MonoBehaviour
             this.playerReplayObjects.Add(go);
         }
 
-        var playerObject = Instantiate(Resources.Load("Player")) as GameObject;
+        this.playerStart.PlayerStarted = false;
     }
 }

@@ -114,13 +114,6 @@ public class PlayerMovement : MonoBehaviour
                 this.transform.FlipXScale();
             }
         }
-
-        //this.animator.SetFloat("xSpeed", Math.Abs(this.Velocity.x));
-        //this.animator.SetFloat("vSpeed", this.Velocity.y);
-        //this.animator.SetBool("OnGround", this.isGrounded);
-        //this.animator.SetBool("FacingLeft", this.IsFacingLeft);
-        //this.animator.SetBool("IsDecelerating", this.isDecelerating);
-        //this.animator.SetBool("IsWallSliding", this.isWallSliding);
     }
 
     private void CheckCollisions()
@@ -174,38 +167,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         this.contactPoints.Clear();
-
-        //var right = Vector2.right.DirectionDegrees();
-        //var rightUp = new Vector2(1, 1).DirectionDegrees();
-        //var up = Vector2.up.DirectionDegrees();
-        //var leftUp = new Vector2(-1, 1).normalized.DirectionDegrees();
-        //var left = Vector2.left.DirectionDegrees();
-        //var leftDown = new Vector2(-1, -1).normalized.DirectionDegrees();
-        //var down = Vector2.down.DirectionDegrees();
-        //var rightDown = new Vector2(1, -1).normalized.DirectionDegrees();
-
-        //Debug.Log(string.Format("Normal Right: {0} RightUp: {1} Up: {2} UpLeft: {3} Left: {4} LeftDown: {5} Down: {6} DownRight: {7}", right, rightUp, up, leftUp, left, leftDown, down, rightDown));
-
-        //right = Vector2.right.RelativeDirectionDegrees(this.Angle);
-        //rightUp = new Vector2(1, 1).normalized.RelativeDirectionDegrees(this.Angle);
-        //up = Vector2.up.RelativeDirectionDegrees(this.Angle);
-        //leftUp = new Vector2(-1, 1).normalized.RelativeDirectionDegrees(this.Angle);
-        //left = Vector2.left.RelativeDirectionDegrees(this.Angle);
-        //leftDown = new Vector2(-1, -1).normalized.RelativeDirectionDegrees(this.Angle);
-        //down = Vector2.down.RelativeDirectionDegrees(this.Angle);
-        //rightDown = new Vector2(1, -1).normalized.RelativeDirectionDegrees(this.Angle);
-
-        //Debug.Log(string.Format("Adjusted Right: {0} RightUp: {1} Up: {2} UpLeft: {3} Left: {4} LeftDown: {5} Down: {6} DownRight: {7}", right, rightUp, up, leftUp, left, leftDown, down, rightDown));
-
-        //foreach (var contactPoint in this.contactPoints)
-        //{
-        //    var start = contactPoint.point;
-        //    var end = contactPoint.point + (contactPoint.normal * 2);
-        //    Debug.DrawLine(start, end, Color.red);
-
-        //    var angle = contactPoint.normal.DirectionDegrees() - 90;
-        //    Debug.Log("Contact angle = " + angle);
-        //}
     }
 
     private void UpdateMovement()

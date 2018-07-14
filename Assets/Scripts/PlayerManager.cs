@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    private PlayerMovement playerMovement;
     private SceneManager sceneManager;
     private float startTime;
     private List<TimePosition> timePositionList;
@@ -19,9 +18,8 @@ public class PlayerManager : MonoBehaviour
         this.sceneManager = GameObject.FindGameObjectWithTag("Level").GetComponent<SceneManager>();
         this.startTime = Time.timeSinceLevelLoad;
         this.timePositionList = new List<TimePosition>();
-	    this.playerMovement = this.GetComponent<PlayerMovement>();
 
-        this.AddTimePosition();
+        //this.AddTimePosition();
     }
 	
 	// Update is called once per frame
