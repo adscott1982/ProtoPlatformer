@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class SceneManager : MonoBehaviour
 {
-    private List<List<TimePosition>> records;
+    private List<PlayerRecord> pendingRecords;
+    private List<PlayerRecord> activeRecords;
     private List<GameObject> playerReplayObjects;
     private PlayerStart playerStart;
     private float restartTime;
@@ -14,7 +15,10 @@ public class SceneManager : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        this.records = new List<List<TimePosition>>();
+        this.restartTime = Time.timeSinceLevelLoad;
+        this.pendingRecords = new List<PlayerRecord>();
+        this.activeRecords = new List<PlayerRecord>();
+
         this.playerReplayObjects = new List<GameObject>();
         this.playerStart = this.GetComponentInChildren<PlayerStart>();
 	}
@@ -22,12 +26,14 @@ public class SceneManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		
+        this.CheckPendingRecords();
 	}
 
-    internal void AddReplay(List<TimePosition> timePositionList)
+   
+
+    internal void AddPlayerRecord(PlayerRecord record)
     {
-        this.records.Add(timePositionList);
+        this.activeRecords.Add(record);
     }
 
     internal void ResetTime()
@@ -38,13 +44,39 @@ public class SceneManager : MonoBehaviour
         }
 
         this.restartTime = Time.timeSinceLevelLoad;
-        foreach(var record in this.records)
+
+        foreach(var record in this.activeRecords)
         {
-            var go = Instantiate(Resources.Load("PlayerReplay")) as GameObject;
-            go.GetComponent<PlayerReplay>().TimePositions = record;
-            this.playerReplayObjects.Add(go);
+            this.pendingRecords.Add(record);
         }
 
-        this.playerStart.PlayerStarted = false;
+        this.activeRecords.Clear();
+    }
+
+    private void CheckPendingRecords()
+    {
+        var timeSinceRestart = Time.timeSinceLevelLoad - this.restartTime;
+        var readyToActivateRecords = this.pendingRecords.Where(r => r.StartDelay < timeSinceRestart);
+
+        foreach (var record in readyToActivateRecords)
+        {
+            this.pendingRecords.Remove(record);
+            this.activeRecords.Add(record);
+            this.ActivateRecord(record);
+
+            if (this.pendingRecords.Count == 0)
+            {
+                // No more replays to add - start new player
+                this.playerStart.StartTime = this.restartTime;
+                this.playerStart.PlayerStarted = false;
+            }
+        } 
+    }
+
+    private void ActivateRecord(PlayerRecord record)
+    {
+        var go = Instantiate(Resources.Load("PlayerReplay")) as GameObject;
+        go.GetComponent<PlayerReplay>().TimePositions = record.TimePositions;
+        this.playerReplayObjects.Add(go);
     }
 }

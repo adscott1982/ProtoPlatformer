@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     private float startTime;
     private List<TimePosition> timePositionList;
 
+    public float StartDelay { get; set; }
     public Vector2 Velocity { get; private set; }
 
     // Use this for initialization
@@ -18,8 +19,6 @@ public class PlayerManager : MonoBehaviour
         this.sceneManager = GameObject.FindGameObjectWithTag("Level").GetComponent<SceneManager>();
         this.startTime = Time.timeSinceLevelLoad;
         this.timePositionList = new List<TimePosition>();
-
-        //this.AddTimePosition();
     }
 	
 	// Update is called once per frame
@@ -28,7 +27,7 @@ public class PlayerManager : MonoBehaviour
         if (InputManager.GetButton4Down())
         {
             Debug.Log("Button 4 is down");
-            this.sceneManager.AddReplay(this.timePositionList);
+            this.sceneManager.AddPlayerRecord(new PlayerRecord(this.StartDelay, this.timePositionList));
             this.sceneManager.ResetTime();
             Destroy(this.gameObject);
         }

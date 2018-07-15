@@ -12,6 +12,8 @@ public class PlayerStart : MonoBehaviour
         }
     }
 
+    public float StartTime = float.NaN;
+
     private float timeLastBlocked;
     private GameObject playerObject;
     private bool isWaiting;
@@ -32,6 +34,7 @@ public class PlayerStart : MonoBehaviour
         }
 
         this.playerObject = Instantiate(Resources.Load("Player"), this.transform.position, Quaternion.identity) as GameObject;
+        this.playerObject.GetComponent<PlayerManager>().StartDelay = float.IsNaN(this.StartTime) ? 0f : Time.timeSinceLevelLoad - this.StartTime;
         this.PlayerStarted = true;
     }
 
@@ -51,12 +54,4 @@ public class PlayerStart : MonoBehaviour
             this.timeLastBlocked = Time.timeSinceLevelLoad;
         }
     }
-
-    //private void OnTriggerExit2D(Collider2D collider)
-    //{
-    //    if (collider.tag == "Platform")
-    //    {
-    //        this.collidingObjects--;
-    //    }
-    //}
 }
