@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class SceneManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     private List<PlayerRecord> pendingRecords;
     private List<PlayerRecord> activeRecords;
@@ -21,7 +22,7 @@ public class SceneManager : MonoBehaviour
 
         this.playerReplayObjects = new List<GameObject>();
         this.playerStart = this.GetComponentInChildren<PlayerStart>();
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()

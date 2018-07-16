@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public bool IsWallJumpEnabled = false;
+    public bool IsWallSlidingEnabled = false;
     public float GroundAccelerationForce = 100f;
     public float AirAccelerationForce = 50f;
     public float MaxSpeed = 4f;
@@ -182,6 +184,12 @@ public class PlayerMovement : MonoBehaviour
         {
             if (this.rb.velocity.y < 0)
             {
+                if (!this.IsWallSlidingEnabled)
+                {
+                    // If no wall sliding - return
+                    return;
+                }
+
                 this.isWallSliding = true;
 
                 // If wall fall speed is greater than the defined speed
@@ -198,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 this.DoGroundJump();
             }
-            else if (this.IsFrontContactPointTriggered) // Else if on a wall, wall jump
+            else if (this.IsWallJumpEnabled && this.IsFrontContactPointTriggered) // Else if on a wall, wall jump
             {
                 this.DoWallJump();
             }

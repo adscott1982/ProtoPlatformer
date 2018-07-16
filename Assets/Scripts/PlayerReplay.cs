@@ -33,10 +33,7 @@ public class PlayerReplay : MonoBehaviour
             this.rb.isKinematic = true;
         }
 
-        //this.transform.position = this.DetermineCurrentPosition();
         var targetPosition = this.DetermineCurrentPosition();
-
-        //this.rb.velocity = this.CalculateVelocity(this.transform.position, targetPosition);
         this.rb.MovePosition(targetPosition);
         this.previousTargetPosition = targetPosition;
 	}

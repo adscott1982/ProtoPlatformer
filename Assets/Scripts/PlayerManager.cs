@@ -1,12 +1,10 @@
 ﻿using Assets.Scripts;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    private SceneManager sceneManager;
+    private LevelManager levelManager;
     private float startTime;
     private List<TimePosition> timePositionList;
 
@@ -16,7 +14,7 @@ public class PlayerManager : MonoBehaviour
     // Use this for initialization
     void Start ()
 	{
-        this.sceneManager = GameObject.FindGameObjectWithTag("Level").GetComponent<SceneManager>();
+        this.levelManager = GameObject.FindGameObjectWithTag("Level").GetComponent<LevelManager>();
         this.startTime = Time.timeSinceLevelLoad;
         this.timePositionList = new List<TimePosition>();
     }
@@ -27,8 +25,8 @@ public class PlayerManager : MonoBehaviour
         if (InputManager.GetButton4Down())
         {
             Debug.Log("Button 4 is down");
-            this.sceneManager.AddPlayerRecord(new PlayerRecord(this.StartDelay, this.timePositionList));
-            this.sceneManager.ResetTime();
+            this.levelManager.AddPlayerRecord(new PlayerRecord(this.StartDelay, this.timePositionList));
+            this.levelManager.ResetTime();
             Destroy(this.gameObject);
         }
 	}

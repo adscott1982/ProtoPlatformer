@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerExit : MonoBehaviour
 {
     private bool playerCollided;
-    private Rigidbody2D playerRb;
+    private AsyncOperation sceneLoader;
 
     // Use this for initialization
     void Start ()
@@ -20,7 +21,24 @@ public class PlayerExit : MonoBehaviour
         }
 
         // Player has collided
+        var currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (this.sceneLoader == null)
+        {
+            this.sceneLoader = SceneManager.LoadSceneAsync(currentSceneIndex + 1);
+        }
         
+        if (!this.sceneLoader.isDone)
+        {
+            return;
+        }
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(currentSceneIndex + 1));
+
+        if (currentSceneIndex > 0)
+        {
+            SceneManager.UnloadSceneAsync(currentSceneIndex - 1);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
