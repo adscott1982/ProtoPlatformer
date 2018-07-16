@@ -56,21 +56,23 @@ public class SceneManager : MonoBehaviour
     private void CheckPendingRecords()
     {
         var timeSinceRestart = Time.timeSinceLevelLoad - this.restartTime;
-        var readyToActivateRecords = this.pendingRecords.Where(r => r.StartDelay < timeSinceRestart);
+        var readyToActivateRecord = this.pendingRecords.FirstOrDefault(r => r.StartDelay < timeSinceRestart);
 
-        foreach (var record in readyToActivateRecords)
+        if (readyToActivateRecord == null)
         {
-            this.pendingRecords.Remove(record);
-            this.activeRecords.Add(record);
-            this.ActivateRecord(record);
+            return;
+        }
 
-            if (this.pendingRecords.Count == 0)
-            {
-                // No more replays to add - start new player
-                this.playerStart.StartTime = this.restartTime;
-                this.playerStart.PlayerStarted = false;
-            }
-        } 
+        this.pendingRecords.Remove(readyToActivateRecord);
+        this.activeRecords.Add(readyToActivateRecord);
+        this.ActivateRecord(readyToActivateRecord);
+
+        if (this.pendingRecords.Count == 0)
+        {
+            // No more replays to add - start new player
+            this.playerStart.StartTime = this.restartTime;
+            this.playerStart.PlayerStarted = false;
+        }
     }
 
     private void ActivateRecord(PlayerRecord record)
