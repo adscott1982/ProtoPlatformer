@@ -43,7 +43,7 @@ public class PlayerExit : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.tag == "Player")
+        if (collider.tag == "Player" && !collider.isTrigger)
         {
             this.playerCollided = true;
         }
